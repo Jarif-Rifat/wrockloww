@@ -43,20 +43,34 @@
   ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 10px; transition: 0.5s; }
   ::-webkit-scrollbar-track { background: transparent; }
 
-  /* ============ GIANT KISS SHOCK ============ */
-  #giant-kiss {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 100000; display: flex; justify-content: center; align-items: center;
-    font-size: 150px; opacity: 0; transform: scale(0.1);
+  /* ============ PRANK MODAL OVERLAY ============ */
+  #prank-modal {
+    position: fixed; inset: 0; background: rgba(74, 25, 44, 0.65); backdrop-filter: blur(8px);
+    z-index: 999999; display: none; justify-content: center; align-items: center; padding: 20px;
+    animation: fadeIn 0.3s ease-out;
   }
-  .pop-kiss { animation: explodeKiss 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-  @keyframes explodeKiss {
-    0% { opacity: 0; transform: scale(0.1); }
-    30% { opacity: 1; transform: scale(4.5) rotate(-10deg); }
-    50% { opacity: 1; transform: scale(4) rotate(5deg); }
-    70% { opacity: 1; transform: scale(4.2) rotate(0deg); }
-    100% { opacity: 0; transform: scale(8); filter: blur(15px); }
+  .prank-card {
+    background: white; padding: 40px 30px; border-radius: var(--radius-lg); text-align: center;
+    max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border: var(--glass-border);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+  .prank-emoji { font-size: 50px; margin-bottom: 12px; }
+  
+  .prank-card h3 { font-family: 'Fraunces', serif; font-size: 26px; color: var(--accent-primary); margin-bottom: 10px; }
+  .prank-card p { font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--text-muted); margin-bottom: 24px; }
+  .prank-btn { background: var(--hero-grad); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 15px; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; }
+  .prank-btn:hover { transform: scale(1.05); }
+
+  /* Shake animation */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+  }
+  .shake-it { animation: shake 0.4s ease-in-out; }
 
   /* ============ HERO SECTION ============ */
   .hero {
@@ -93,13 +107,6 @@
   .time-box span { display: block; font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; }
   .time-box label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; opacity: 0.9; }
 
-  /* Progress */
-  .trip-progress-container { background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 10px 40px var(--accent-glow); margin: -20px auto 0; position: relative; z-index: 10; max-width: 800px; border: var(--glass-border); transition: box-shadow 1s ease; }
-  .progress-text { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 12px; font-size: 15px; }
-  .progress-text span:last-child { color: var(--accent-primary); font-family: 'Fraunces', serif; font-size: 20px; transition: color 1s ease; }
-  .progress-bg { height: 14px; background: rgba(0,0,0,0.05); border-radius: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
-  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary)); border-radius: 20px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 1s ease; }
-
   /* Navigation */
   .nav-container { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border-bottom: 2px solid rgba(255, 255, 255, 0.5); padding: 15px 0; margin-top: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
   .tabs { display: flex; gap: 12px; max-width: 1000px; margin: 0 auto; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
@@ -109,116 +116,52 @@
   .tab-btn .day-title { display: block; font-size: 15px; font-weight: 700; }
   .tab-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); border-color: var(--accent-glow); }
   .tab-btn.active { background: var(--hero-grad); color: white; box-shadow: 0 10px 30px var(--accent-glow); border-color: transparent; }
-  
-  /* Locked Tab Styling */
-  .tab-btn.locked { opacity: 0.5; cursor: not-allowed; background: #f1f1f1; }
-  .tab-btn.locked:hover { transform: none; box-shadow: none; border-color: transparent; }
 
-  /* ============ MAIN LAYOUT (MOBILE FIRST) ============ */
   main { max-width: 840px; margin: 0 auto; padding: 40px 20px 80px; }
-  .day-layout { display: flex; flex-direction: column; gap: 0; }
   .day-header { text-align: center; margin-bottom: 30px; animation: fadeIn 0.5s ease-out; }
-  .day-header h2 { font-family: 'Fraunces', serif; font-size: 40px; margin-bottom: 8px; transition: color 1s ease; }
+  .day-header h2 { font-family: 'Fraunces', serif; font-size: 40px; margin-bottom: 8px; }
   .day-header p.subtitle { font-size: 17px; font-weight: 600; }
 
-  /* Locked Screen Message */
-  .locked-screen { text-align: center; padding: 60px 20px; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); border: var(--glass-border); margin-top: 20px; }
-  .locked-screen h3 { font-family: 'Fraunces', serif; font-size: 28px; color: var(--accent-primary); margin-bottom: 12px; }
-  .locked-screen p { font-size: 16px; font-weight: 600; color: var(--text-muted); }
-
-  /* Daily Note & Secret Envelope */
-  .daily-note { background: var(--bg-card); backdrop-filter: blur(20px); border: var(--glass-border); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 24px; box-shadow: 0 10px 40px var(--accent-glow); text-align: left; transition: box-shadow 1s ease; }
-  .daily-note-title { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; color: var(--accent-primary); font-weight: 700; margin-bottom: 12px; transition: color 1s ease;}
-  .daily-note p { position: relative; padding-left: 28px; margin-bottom: 12px; font-size: 15.5px; line-height: 1.6; font-weight: 600; }
-  .daily-note p::before { content: "✨"; position: absolute; left: 0; top: 1px; font-size: 14px; }
-
-  .secret-letter-wrapper { margin: 0 0 40px 0; position: relative; z-index: 10; animation: fadeIn 1s ease-out 0.4s both; }
-  .envelope { background: white; border-radius: var(--radius-lg); box-shadow: 0 10px 30px var(--accent-glow); cursor: pointer; overflow: hidden; border: 3px solid var(--accent-glow); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .envelope:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 45px var(--accent-primary); }
-  .envelope-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to right, white, var(--bg-main)); transition: background 1s ease; }
-  .envelope-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--accent-primary); display: flex; align-items: center; gap: 10px; transition: color 1s ease;}
-  .tap-hint { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: white; background: var(--accent-primary); padding: 8px 16px; border-radius: 20px; animation: pulseHint 2s infinite; transition: background 1s ease; }
-  .envelope-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.6s cubic-bezier(0.4, 0, 0.2, 1); background: #fffafa; }
-  .envelope-body.open { grid-template-rows: 1fr; border-top: 2px dashed var(--accent-glow); }
-  .envelope-content { overflow: hidden; }
-  .letter-text { padding: 30px; }
-  .letter-text p { font-size: 16px; line-height: 1.6; font-weight: 600; margin-bottom: 12px; }
-  .letter-signoff { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--accent-primary); margin-top: 20px; text-align: right; transition: color 1s ease; }
-
-  /* Timeline */
-  .timeline { position: relative; }
-  .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 4px; background: linear-gradient(to bottom, var(--accent-primary) 0%, rgba(255, 255, 255, 0) 100%); border-radius: 4px; transition: background 1s ease; }
-  .stop-item { position: relative; display: flex; gap: 24px; margin-bottom: 28px; opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s ease-out forwards; }
-  .node-btn { flex: 0 0 60px; width: 60px; height: 60px; border-radius: 50%; background: white; border: 4px solid var(--accent-glow); display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .node-btn svg { width: 26px; height: 26px; stroke: var(--accent-primary); fill: none; stroke-width: 2.5; transition: 1s ease; }
-  .node-btn:hover { transform: scale(1.15); border-color: var(--accent-primary); }
-  .node-btn.completed { background: var(--hero-grad); border-color: transparent; box-shadow: 0 8px 25px var(--accent-glow); animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .node-btn.completed svg { stroke: white; }
-  .stop-card { flex: 1; background: var(--bg-card); backdrop-filter: blur(10px); border: var(--glass-border); border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.05); transition: transform 0.4s ease, box-shadow 0.4s ease; }
-  .stop-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px var(--accent-glow); border-color: white; }
-  .stop-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-  .time-badge { background: white; border: 2px solid var(--accent-glow); color: var(--accent-primary); font-size: 13px; font-weight: 800; padding: 6px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; transition: all 1s ease;}
-  .stop-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; transition: 0.3s; }
-  .stop-title.completed { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--accent-primary); opacity: 0.7; }
-  .stop-desc { font-size: 16px; line-height: 1.6; font-weight: 600; }
-
-  /* ============ LAPTOP/DESKTOP SPECIFIC LAYOUT ============ */
-  @media(min-width: 850px) {
-    main { max-width: 1100px; padding: 60px 20px 100px; }
-    .day-layout { flex-direction: row; gap: 50px; align-items: flex-start; }
-    .day-sidebar { flex: 0 0 380px; position: sticky; top: 120px; }
-    .day-timeline { flex: 1; margin-top: 0; }
-    .day-header { text-align: left; }
-  }
-
-  /* Mini Game & Big Letter */
-  .unlock-container { display: flex; justify-content: center; align-items: center; min-height: 250px; animation: fadeIn 0.8s ease-out forwards; }
-  .magic-btn { font-family: 'Quicksand', sans-serif; font-size: 20px; font-weight: 800; color: white; background: var(--hero-grad); border: none; padding: 20px 40px; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px var(--accent-glow); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .magic-btn.pulse { animation: heartbeat 2s infinite; }
-  .magic-btn:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px var(--accent-primary); }
-
-  .big-letter-container { background: white; border-radius: 36px; padding: 50px 40px; box-shadow: 0 20px 60px var(--accent-glow); border: var(--glass-border); position: relative; overflow: hidden; animation: fadeIn 0.8s ease-out forwards; max-width: 800px; margin: 0 auto; }
-  .big-letter-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 12px; background: var(--hero-grad); }
-  .big-letter-content p { font-size: 18px; line-height: 1.8; margin-bottom: 24px; font-weight: 600; }
-  .big-letter-content p:first-of-type::first-letter { font-family: 'Fraunces', serif; font-size: 60px; font-weight: 800; color: var(--accent-primary); float: left; margin-right: 12px; line-height: 1; padding-top: 4px; transition: color 1s ease; }
-  .big-letter-signature { font-family: 'Fraunces', serif; font-style: italic; font-size: 30px; color: var(--accent-primary); text-align: right; margin-top: 40px; border-top: 2px dashed var(--accent-glow); padding-top: 20px; transition: color 1s ease; }
-
-  /* Extras Grids */
-  .info-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 48px; animation: fadeIn 0.8s ease-out; }
-  @media(min-width: 768px){ .info-grid { grid-template-columns: 1fr 1fr; } .info-full { grid-column: 1 / -1; } }
-  .info-card { background: var(--bg-card); backdrop-filter: blur(10px); border: var(--glass-border); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--shadow-soft); }
-  .info-card h3 { font-family: 'Fraunces', serif; font-size: 22px; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
-  .info-card h3 svg { width: 24px; height: 24px; stroke: var(--accent-primary); fill: none; stroke-width: 2.5; }
-  .grocery-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-  .g-tag { background: white; border: 1px solid var(--accent-glow); color: var(--accent-primary); font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 50px; box-shadow: 0 2px 8px rgba(255, 77, 109, 0.05); }
-  .app-list { display: flex; flex-direction: column; gap: 16px; }
-  .app-item { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px dashed var(--accent-glow); padding-bottom: 12px; }
-  .app-item:last-child { border: none; padding: 0; }
-  .app-name { font-weight: 700; color: var(--text-main); font-size: 15px; }
-  .app-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
+  /* ============ MEMORY VAULT STYLING ============ */
+  .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 30px; animation: fadeIn 0.8s ease-out; }
+  .polaroid { background: white; padding: 15px 15px 25px 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 2px solid var(--accent-glow); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center; }
+  .polaroid:hover { transform: translateY(-8px) rotate(2deg); box-shadow: 0 15px 40px var(--accent-primary); }
+  .polaroid-img-box { width: 100%; height: 220px; background: var(--bg-main); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .polaroid-img-box img { width: 100%; height: 100%; object-fit: cover; }
+  .polaroid-placeholder { font-size: 40px; }
+  .polaroid-caption { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; color: var(--text-main); margin-top: 15px; font-weight: 600; }
+  .upload-box { background: var(--bg-card); backdrop-filter: blur(10px); border: 3px dashed var(--accent-primary); border-radius: var(--radius-lg); padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 30px var(--accent-glow); }
+  .upload-btn { display: inline-block; background: var(--hero-grad); color: white; padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 20px var(--accent-glow); transition: 0.3s; margin-top: 15px; }
+  .upload-btn:hover { transform: scale(1.05); }
+  #file-input { display: none; }
 
   footer { text-align: center; padding: 40px 20px 80px; position: relative; z-index: 10;}
   footer p { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
-  .heart-footer { display: inline-block; color: var(--accent-primary); font-size: 24px; animation: heartbeat 1.5s infinite; transition: color 1s ease;}
-  .signature { font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--accent-primary); font-weight: 800; transition: color 1s ease;}
+  .heart-footer { display: inline-block; color: var(--accent-primary); font-size: 24px; animation: heartbeat 1.5s infinite; }
+  .signature { font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--accent-primary); font-weight: 800; }
 
+  @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
   @keyframes popIn { 0% { transform: scale(0.8); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-  @keyframes pulseHint { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
 </style>
 </head>
-<body>
+<body id="body-tag">
 
-<!-- Giant Kiss Shock Element -->
-<div id="giant-kiss">💋</div>
-<canvas id="confetti-canvas"></canvas>
+<!-- PRANK POPUP MODAL -->
+<div id="prank-modal">
+  <div class="prank-card">
+    <div class="prank-emoji" id="prank-emoji">🤖</div>
+    <h3 id="prank-title">System Error</h3>
+    <p id="prank-text">Access denied.</p>
+    <button class="prank-btn" onclick="closePrank()">Fine, I'll close it 🙄</button>
+  </div>
+</div>
 
 <header class="hero">
   <div class="floating-hearts" id="bg-hearts"></div>
   <div class="hero-content">
     <div class="badge-love">
-      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       Jarif & Adia
     </div>
     <h1>Wrocław</h1>
@@ -233,14 +176,6 @@
   </div>
 </header>
 
-<div class="trip-progress-container">
-  <div class="progress-text">
-    <span>Memories made together</span>
-    <span id="progText">0 / 0</span>
-  </div>
-  <div class="progress-bg"><div class="progress-fill" id="progFill"></div></div>
-</div>
-
 <nav class="nav-container">
   <div class="tabs" id="tabs"></div>
 </nav>
@@ -253,320 +188,129 @@
 </footer>
 
 <script>
-// SVGs
-const ICONS = {
-  plane: `<path d="M2 12h20M2 12l5-5M2 12l5 5"/>`, walk: `<path d="M13 4a2 2 0 100-4 2 2 0 000 4zM4.5 19.5L6 14l-3-1v-4l6 2h3l3-8h3l-4 9 1 3 4-1v3l-5 2-2-6-1.5 5.5-5 1.5z"/>`, bridge: `<path d="M3 15c2-3 5-4 9-4s7 1 9 4M4 19h16M7 19v-4M12 19v-5M17 19v-4"/>`, view: `<path d="M2 18l6-8 4 5 3-4 7 7"/><circle cx="17" cy="7" r="2"/>`, food: `<path d="M7 3v7a2 2 0 002 2v9M7 3v9M11 3v9M17 3c-2 0-3 2-3 4v4h3v9"/>`, cook: `<path d="M4 13a8 8 0 0116 0z"/><path d="M4 13h16M9 3l1 3M13 3l1 3M17 3l1 3"/>`, museum: `<path d="M4 21h16M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>`, train: `<rect x="5" y="4" width="14" height="13" rx="2"/><path d="M5 12h14M8 17l-2 4M16 17l2 4"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/>`, castle: `<path d="M5 21V9l3-3v3h2V5h4v4h2V6l3 3v12z"/><path d="M9 21v-5h6v5"/>`, shopping: `<path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 016 0v2"/>`, sunset: `<circle cx="12" cy="14" r="4"/><path d="M3 18h18M5 14H3M21 14h-2M6 8l1.5 1.5M18 8l-1.5 1.5M12 5V3"/>`, coffee: `<path d="M4 9h13a3 3 0 010 6h-1"/><path d="M4 9v6a4 4 0 004 4h4a4 4 0 004-4V9M6 3c0 1-1 1-1 2M10 3c0 1-1 1-1 2"/>`
-};
-
-// Themes
-const THEMES = [
-  { bg: "#fff0f3", text: "#4a192c", muted: "#8a5a6b", prim: "#ff4d6d", sec: "#ff8fa3", glow: "#ffb3c1", hero: "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)" },
-  { bg: "#f8f0ff", text: "#3c1b52", muted: "#795a8a", prim: "#b556f6", sec: "#d18cfa", glow: "#e5bdfa", hero: "linear-gradient(135deg, #b556f6 0%, #d18cfa 100%)" },
-  { bg: "#f0fdf4", text: "#16472d", muted: "#538c6d", prim: "#38bdf8", sec: "#6ee7b7", glow: "#a7f3d0", hero: "linear-gradient(135deg, #38bdf8 0%, #6ee7b7 100%)" },
-  { bg: "#fffdf0", text: "#524312", muted: "#947f3b", prim: "#fbbf24", sec: "#fcd34d", glow: "#fde68a", hero: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" },
-  { bg: "#fff5f0", text: "#5c2514", muted: "#9c5740", prim: "#f97316", sec: "#fb923c", glow: "#fdba74", hero: "linear-gradient(135deg, #f97316 0%, #fb923c 100%)" },
-  { bg: "#f0f8ff", text: "#1c3d5a", muted: "#5a7e9c", prim: "#60a5fa", sec: "#93c5fd", glow: "#bfdbfe", hero: "linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%)" },
-  { bg: "#fff0f3", text: "#4a0b1c", muted: "#8a243d", prim: "#e11d48", sec: "#fb7185", glow: "#fda4af", hero: "linear-gradient(135deg, #be123c 0%, #f43f5e 100%)" }
-];
-
-const ITINERARY = [
+const TABS = [
   { 
-    day: "Fri", date: "Oct 16", unlockDateTime: "2026-10-16T00:00:00", title: "Finally Back Together", sub: "The wait is over. Just you, me, and zero distance.",
-    love: ["After 540 days of counting down through a screen, I finally get to wrap my arms around you.", "This isn't just a trip, baby. It's the start of us making up for lost time.", "Tonight, I just want to hold you close and realize you're actually here."],
-    secretTitle: "💌 Open in bed...", secretText: ["A year and a half is way too long to wait to touch you. Tonight, I'm giving you so many kisses your cheeks are going to be red.", "Drop your bags, look at me, and come give me a proper kiss right now..."],
-    stops: [
-      { time: "Afternoon", icon: "plane", name: "Arrive & Check-in", desc: "Drop our bags, breathe, and take a moment to realize we are finally in the same room. I’m never letting go of this hug." },
-      { time: "Afternoon", icon: "shopping", name: "Grocery Run", desc: "Picking up snacks and breakfast basics. Honestly, I'm just excited to push a cart around with you like we live together." },
-      { time: "Evening", icon: "view", name: "Rynek (Market Square)", desc: "Seeing the town hall lit up at night for the first time. But let's be real, I'll be looking at you." },
-      { time: "Night", icon: "food", name: "Bar Mleczny Dinner", desc: "A cozy, quiet little table. Sitting next to you, feeling your knee against mine after 1.5 years apart." }
-    ]
+    name: "📸 Memory Vault", 
+    isVault: true 
   },
   { 
-    day: "Sat", date: "Oct 17", unlockDateTime: "2026-10-17T00:00:00", title: "Cobblestones & Kisses", sub: "Exploring Old Town, gas lamps, and the lovers' bridge.",
-    love: ["Walking around a beautiful new city, with my hand locked in yours... it’s all I’ve dreamed about.", "I keep planning these sightseeing spots, but my favorite view is always going to be you.", "Holding you on that bridge tonight is going to be a moment I remember for the rest of my life."],
-    secretTitle: "💌 A tiny secret...", secretText: ["You look so beautiful walking around this city, but honestly? Half the time I'm just thinking about getting you back to the room.", "So many cuddles and kisses are waiting for my baby tonight."],
-    stops: [
-      { time: "Morning", icon: "museum", name: "Old Town Hall", desc: "Walking through the Gothic architecture in the daylight. Perfect lighting for pictures of my gorgeous girl." },
-      { time: "Late Morning", icon: "bridge", name: "Witch's Bridge", desc: "A high footbridge strung between two towers. The perfect excuse for you to hold onto my arm a little tighter." },
-      { time: "Midday", icon: "view", name: "Cathedral Tower Climb", desc: "We're heading up to the best view in the city. Though I still think you're the prettiest thing in the skyline." },
-      { time: "Afternoon", icon: "bridge", name: "Tumski Bridge", desc: "The famous lovers' bridge of Wrocław. We'll hold hands here while they light the gas lamps one by one." }
-    ]
+    name: "🔒 Day 1", 
+    emoji: "🛑",
+    title: "Server Halted!",
+    msg: "Error 403: Impatient girlfriend detected. Jarif’s firewall blocked this tab because you're trying to speedrun a 540-day countdown. Touch grass (or wait for October)." 
   },
   { 
-    day: "Sun", date: "Oct 18", unlockDateTime: "2026-10-18T00:00:00", title: "Modern Magic", sub: "Exhibitions, miniature worlds, and cooking together.",
-    love: ["Honestly, we could be doing absolutely nothing today and it would still be perfect, just because I'm with you.", "You make the ordinary things feel so special, Adia. That's my favorite thing about you.", "Tonight, having you in the kitchen with me is going to feel so incredibly right. Like home."],
-    secretTitle: "💌 For my chef...", secretText: ["You stealing bites in the kitchen is cute, but I know exactly what else I want to take a bite of... 💋", "Put the spoon down, turn around, and give me a kiss right now."],
-    stops: [
-      { time: "Morning", icon: "museum", name: "Centennial Hall", desc: "Exploring a massive, historic UNESCO site together hand in hand." },
-      { time: "Midday", icon: "view", name: "Japanese Garden", desc: "The autumn maples will be bright red. I’m definitely making you pose for pictures here." },
-      { time: "Afternoon", icon: "train", name: "Kolejkowo", desc: "A huge miniature world with tiny trains. It's so playful and cute, just like you." },
-      { time: "Evening", icon: "cook", name: "Cooking Together", desc: "You stealing bites while I try to cook for us. This is the exact domestic vibe I've missed the most." }
-    ]
+    name: "🔒 Day 2", 
+    emoji: "🕵️‍♀️",
+    title: "Nice Try, Hacker.",
+    msg: "Biometric scan failed: Too much curiosity. This file is encrypted with high-level secrecy until the exact minute we land. Keep guessing what's inside!" 
   },
   { 
-    day: "Mon", date: "Oct 19", unlockDateTime: "2026-10-19T00:00:00", title: "Castles for My Queen", sub: "A full day out of the city via train to Silesia.",
-    love: ["Any train ride is perfect as long as you're the one sitting next to me.", "You can fall asleep on my shoulder for the whole ride, baby. I won't move an inch.", "Taking you to a gorgeous castle today, because you deserve to be treated like absolute royalty."],
-    secretTitle: "💌 Royal treatment...", secretText: ["I'm treating you like my absolute queen all day out here... so you can treat me like a king tonight.", "Get ready for all the kisses when we get back to the room."],
-    stops: [
-      { time: "Morning", icon: "train", name: "Train to Świdnica", desc: "A 50-minute ride through the Polish countryside. Lean your head on my shoulder, sweetheart." },
-      { time: "Late Morning", icon: "museum", name: "Church of Peace", desc: "An massive, stunning church built entirely out of wood. The architecture is unbelievable." },
-      { time: "Afternoon", icon: "castle", name: "Książ Castle", desc: "A grand, historical palace built for royalty. Walking through these grand halls with the girl of my dreams." },
-      { time: "Evening", icon: "cook", name: "Cozy Night In", desc: "Taking the train back, getting into comfy clothes, and eating leftovers or quick pasta. Perfection." }
-    ]
+    name: "🔒 Day 3", 
+    emoji: "🔐",
+    title: "Classified Intel",
+    msg: "Classified under 'Jarif’s Secret Agenda'. Unauthorized viewing by Adia will result in mandatory headpats and zero spoilers." 
   },
   { 
-    day: "Tue", date: "Oct 20", unlockDateTime: "2026-10-20T00:00:00", title: "Golden Hour Sunsets", sub: "Wrapping up our trip with one beautiful final night.",
-    love: ["Time is going way too fast. I'm already trying to figure out how to pause the clock so I can hold you longer.", "Loving you long-distance is worth it, but being with you in person is everything I've ever wanted.", "Tonight is all about dressing up and celebrating us. We survived the distance, baby."],
-    secretTitle: "💌 Tonight's plan...", secretText: ["It's our last full night together. Dress up gorgeous for dinner, baby, but honestly, I'm just counting down the minutes until I can take it all off later.", "Give me a kiss. A big one."],
-    stops: [
-      { time: "Morning", icon: "walk", name: "Finish the Dwarf Hunt", desc: "Let's find the last few statues on our map! I love watching you get so focused and competitive, baby." },
-      { time: "Midday", icon: "museum", name: "Zoo & Afrykarium", desc: "Looking at all the aquatic animals. I'm ready to film your reactions because I know they'll be adorable." },
-      { time: "Evening", icon: "sunset", name: "Grunwaldzki Bridge Sunset", desc: "Watching the golden light hit the Odra river. Just you leaning against my chest." },
-      { time: "Night", icon: "food", name: "The Splurge Dinner", desc: "Dress up tonight, baby. I want one perfect, romantic dinner to just sit and appreciate my beautiful girl." }
-    ]
+    name: "🔒 Day 4", 
+    emoji: "🚧",
+    title: "Under Construction",
+    msg: "Warning: Heavy romantic engineering in progress. Hard hats required. Come back later when the paperwork clears." 
   },
   { 
-    day: "Wed", date: "Oct 21", unlockDateTime: "2026-10-21T00:00:00", title: "Until Next Time", sub: "One last slow morning before we fly.",
-    love: ["Saying goodbye is going to be the hardest part, but this isn't the end. It's just a 'see you soon'.", "Wherever you fly today, a massive piece of my heart is going right with you in your suitcase.", "I loved you before this trip, and I love you infinitely more after it. That will never change."],
-    secretTitle: "💌 Before you go...", secretText: ["Don't even think about leaving this room without giving me one million kisses. I'm going to miss your touch so much, baby.", "Come here right now and give me a kiss... I love you."],
-    stops: [
-      { time: "Morning", icon: "coffee", name: "Coffee & Pastries", desc: "No rushing today. Just holding your hand across a cafe table and memorizing your face one more time." },
-      { time: "Late Morning", icon: "shopping", name: "Last Minute Strolls", desc: "One final walk through the square. One more slow kiss before the real world pulls us back." },
-      { time: "Midday", icon: "plane", name: "Check-out & Depart", desc: "The hardest part of the trip. But baby, we closed the gap once, and we'll do it again. I love you." }
-    ]
+    name: "🔒 Day 5", 
+    emoji: "🛸",
+    title: "Alien Interference",
+    msg: "Data corrupted by extreme excitement levels. Please calm down, take a deep breath, and check back in a few weeks." 
   },
   { 
-    isLetterTab: true, 
-    day: "Forever", 
-    date: "Oct 21 (11 AM)", 
-    unlockDateTime: "2026-10-21T11:00:00", // Unlocks on Oct 21 exactly at 11:00 AM!
-    title: "My Heart is Yours", 
-    sub: "A special message for when you land..." 
+    name: "🔒 Day 6", 
+    emoji: "🚨",
+    title: "Emergency Lockdown",
+    msg: "You hit the finish line way too early! The end-game content is locked until you actually survive the rest of the trip first." 
   }
 ];
 
-const appState = {
-  activeDay: 0, checkedItems: new Set(),
-  totalItems: ITINERARY.filter(d => !d.isLetterTab).reduce((total, day) => total + day.stops.length, 0),
-  confettiFired: false, letterUnlockStep: 0 
-};
-
-const UI = {
-  tabs: document.getElementById('tabs'), root: document.getElementById('app-root'),
-  progFill: document.getElementById('progFill'), progText: document.getElementById('progText')
-};
-
-function applyTheme(idx) {
-  const root = document.documentElement; const theme = THEMES[idx];
-  root.style.setProperty('--bg-main', theme.bg); root.style.setProperty('--text-main', theme.text); root.style.setProperty('--text-muted', theme.muted);
-  root.style.setProperty('--accent-primary', theme.prim); root.style.setProperty('--accent-secondary', theme.sec); root.style.setProperty('--accent-glow', theme.glow);
-  root.style.setProperty('--hero-grad', theme.hero);
-}
-
-// Helper to check if a day is unlocked based on real-world date and time
-function isDayUnlocked(dayObj) {
-  const now = new Date(); // Current real-world time
-  const unlockTime = new Date(dayObj.unlockDateTime);
-  
-  // FOR TESTING: If you want to test right now, you can uncomment the next line:
-  // return true; 
-  
-  return now >= unlockTime;
-}
+let activeTab = 0;
+const userPhotos = [
+  { caption: "Our first coffee in Wrocław ☕", url: "" },
+  { caption: "Gas lamplighter walk ✨", url: "" },
+  { caption: "My favorite view (You) 💖", url: "" }
+];
 
 function renderTabs() {
-  UI.tabs.innerHTML = ITINERARY.map((day, idx) => {
-    const unlocked = isDayUnlocked(day);
-    return `
-      <button class="tab-btn ${idx === appState.activeDay ? 'active' : ''} ${!unlocked ? 'locked' : ''}" data-idx="${idx}">
-        <span class="day-label">${day.day} · ${day.date}</span>
-        <span class="day-title">${!unlocked ? '🔒 Locked' : day.title}</span>
-      </button>
-    `;
-  }).join('');
-  
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.dataset.idx);
-      const dayObj = ITINERARY[idx];
-      
-      if (!isDayUnlocked(dayObj)) {
-        alert("Patience, my love! This unlocks on " + dayObj.date + " 🌸");
-        return;
-      }
+  const container = document.getElementById('tabs');
+  container.innerHTML = TABS.map((t, idx) => `
+    <button class="tab-btn ${idx === activeTab ? 'active' : ''}" onclick="handleTabClick(${idx})">
+      <span class="day-label">Wrocław Trip</span>
+      <span class="tab-title">${t.name}</span>
+    </button>
+  `).join('');
+}
 
-      appState.activeDay = idx;
-      if(dayObj.isLetterTab) { appState.letterUnlockStep = 0; }
-      applyTheme(appState.activeDay);
-      renderTabs(); renderContent();
-    });
-  });
+function handleTabClick(idx) {
+  if (TABS[idx].isVault) {
+    activeTab = idx;
+    renderTabs();
+    renderContent();
+  } else {
+    // Shake effect on body
+    const body = document.getElementById('body-tag');
+    body.classList.add('shake-it');
+    setTimeout(() => body.classList.remove('shake-it'), 400);
+
+    // Show clever prank popup
+    document.getElementById('prank-emoji').textContent = TABS[idx].emoji;
+    document.getElementById('prank-title').textContent = TABS[idx].title;
+    document.getElementById('prank-text').textContent = TABS[idx].msg;
+    document.getElementById('prank-modal').style.display = 'flex';
+  }
+}
+
+function closePrank() {
+  document.getElementById('prank-modal').style.display = 'none';
 }
 
 function renderContent() {
-  const day = ITINERARY[appState.activeDay];
-  
-  if (!isDayUnlocked(day)) {
-    UI.root.innerHTML = `
-      <div class="locked-screen">
-        <h3>🔒 Locked Until ${day.date}</h3>
-        <p>You have to wait until this time arrives, my love! I'm counting down the seconds too. ❤️</p>
-      </div>
-    `;
-    return;
-  }
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="day-header">
+      <h2>Our Memory Vault 📸</h2>
+      <p class="subtitle">Every picture we take together goes right here.</p>
+    </div>
+    
+    <div class="upload-box">
+      <p style="font-weight:700; font-size:16px; margin-bottom:8px;">Add a new photo to our vault</p>
+      <p style="font-size:13.5px; color:var(--text-muted);">Snap a picture during our dates and upload it right here!</p>
+      <label class="upload-btn">
+        Choose Photo <input type="file" id="file-input" accept="image/*">
+      </label>
+    </div>
 
-  if (day.isLetterTab) {
-    if (appState.letterUnlockStep === 0) {
-      UI.root.innerHTML = `
-        <div class="day-header">
-          <h2>Wait a second... 🛑</h2>
-          <p class="subtitle">You can't just open my most special letter that easily.</p>
-          <p class="subtitle" style="margin-top:5px; font-weight:800; color: var(--accent-primary);">You have to earn it, babe.</p>
-        </div>
-        <div class="unlock-container"><button class="magic-btn pulse" id="btn-kiss">Kiss here to unlock 💋</button></div>
-      `;
-      document.getElementById('btn-kiss').addEventListener('click', () => { 
-        const giantKiss = document.getElementById('giant-kiss');
-        giantKiss.classList.remove('pop-kiss'); void giantKiss.offsetWidth; giantKiss.classList.add('pop-kiss');
-        setTimeout(() => { appState.letterUnlockStep = 1; renderContent(); }, 1100);
-      });
-      return;
-    } else if (appState.letterUnlockStep === 1) {
-      UI.root.innerHTML = `
-        <div class="day-header">
-          <h2>Mmmm... good girl. 😏</h2>
-          <p class="subtitle">Just one more thing...</p>
-          <p class="subtitle" style="margin-top:5px; font-weight:800; color: var(--accent-primary);">Say the magic words to open it.</p>
-        </div>
-        <div class="unlock-container"><button class="magic-btn" id="btn-love">I love you, Jarif! 💕</button></div>
-      `;
-      document.getElementById('btn-love').addEventListener('click', () => { appState.letterUnlockStep = 2; fireConfetti(); renderContent(); });
-      return;
-    } else if (appState.letterUnlockStep === 2) {
-      UI.root.innerHTML = `
-        <div class="day-header"><h2>${day.title}</h2><p class="subtitle">${day.sub}</p></div>
-        <div class="big-letter-container">
-          <div class="big-letter-content">
-            <p>My sweet Adia,</p>
-            <p>I can't even begin to tell you how many times I've played this exact moment in my head. A year and a half. Over 540 days of waking up missing you, of looking at your gorgeous face through a tiny screen, of wishing I could just reach through my phone and pull you into my arms.</p>
-            <p>Long distance is hard, but loving you is the easiest thing I have ever done. You have been my absolute rock through every single day of this. The late-night video calls, the timezones, the moments where I missed you so much it physically hurt—every single second of it was worth it, because it led us right here. To this city, to this trip, to you finally being right in front of me.</p>
-            <p>I want you to know how much you mean to me. You aren't just my girlfriend; you are my best friend, my soulmate, my entire world. I love your smile, I love how competitive you get over tiny things, I love how you laugh. You make every ordinary day feel like magic just by being in it.</p>
-            <p>This trip to Wrocław is our first real adventure together, but baby, this is just the prologue. We have a whole lifetime of adventures waiting for us. I promise to hold your hand through all of them. I promise to treat you like the queen you are. And I promise to give you all the love you could ever want (and a lot more).</p>
-            <p>Now, stop reading this, look at me, and come give me a real kiss. Our forever starts now.</p>
-            <div class="big-letter-signature">Forever yours,<br>Jarif ♥</div>
+    <div class="vault-grid">
+      ${userPhotos.map(p => `
+        <div class="polaroid">
+          <div class="polaroid-img-box">
+            ${p.url ? `<img src="${p.url}" alt="Memory">` : `<span class="polaroid-placeholder">❤️</span>`}
           </div>
+          <div class="polaroid-caption">${p.caption}</div>
         </div>
-      `;
-      return; 
-    }
-  }
-
-  // DESKTOP SPLIT LAYOUT + MOBILE STACK
-  let html = `
-    <div class="day-layout">
-      <div class="day-sidebar">
-        <div class="day-header"><h2>${day.title}</h2><p class="subtitle">${day.sub}</p></div>
-        <div class="daily-note"><div class="daily-note-title">Thoughts for today...</div><div>
-          ${day.love.map((text, i) => `<p style="animation-delay: ${0.1 * i}s">${text}</p>`).join('')}
-        </div></div>
-        
-        <div class="secret-letter-wrapper">
-          <div class="envelope" id="day-envelope">
-            <div class="envelope-header">
-              <div class="envelope-title">${day.secretTitle}</div>
-              <div class="tap-hint" id="day-tap-hint">Tap to open</div>
-            </div>
-            <div class="envelope-body" id="day-letter-body">
-              <div class="envelope-content"><div class="letter-text">
-                ${day.secretText.map(text => `<p>${text}</p>`).join('')}
-                <div class="letter-signoff">— Come kiss me ♥</div>
-              </div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="day-timeline">
-        <div class="timeline">
-          ${day.stops.map((stop, i) => {
-            const stopId = `${appState.activeDay}-${i}`;
-            const isDone = appState.checkedItems.has(stopId) ? 'completed' : '';
-            return `
-            <div class="stop-item" style="animation-delay: ${0.1 * i}s">
-              <div class="node-btn ${isDone}" data-id="${stopId}"><svg viewBox="0 0 24 24">${ICONS[stop.icon] || ICONS.walk}</svg></div>
-              <div class="stop-card">
-                <div class="stop-meta"><span class="time-badge">${stop.time}</span></div>
-                <div class="stop-title ${isDone}" id="title-${stopId}">${stop.name}</div>
-                <p class="stop-desc">${stop.desc}</p>
-              </div>
-            </div>`
-          }).join('')}
-        </div>
-      </div>
+      `).join('')}
     </div>
   `;
 
-  if (appState.activeDay === 0) {
-    html += `
-      <div class="info-grid">
-        <div class="info-card info-full">
-          <h3><svg viewBox="0 0 24 24"><path d="M6 3h12l1 6a7 7 0 01-14 0z"/><path d="M12 15v6M9 21h6"/></svg> Grocery run with my baby 🛒</h3>
-          <div class="grocery-tags">
-            <span class="g-tag">Eggs</span><span class="g-tag">Bread</span><span class="g-tag">Butter</span><span class="g-tag">Onions</span><span class="g-tag">Cabbage</span><span class="g-tag">Potatoes</span><span class="g-tag">Halal Beef</span><span class="g-tag">Pasta</span><span class="g-tag">Rice</span><span class="g-tag">Cheese Pierogi (Ruskie)</span><span class="g-tag">Chicken Breast</span><span class="g-tag">Halal Kabab</span><span class="g-tag">Juice & Snacks</span>
-          </div>
-        </div>
-        <div class="info-card">
-          <h3><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg> Must-Have Apps 📱</h3>
-          <div class="app-list">
-            <div class="app-item"><span class="app-name">Jakdojade</span><span class="app-desc">For all trams/buses, routes, and tickets</span></div>
-            <div class="app-item"><span class="app-name">Koleo</span><span class="app-desc">For our castle train tickets</span></div>
-            <div class="app-item"><span class="app-name">Uber / Bolt</span><span class="app-desc">For getting back late after dates</span></div>
-            <div class="app-item"><span class="app-name">Wrocławskie Krasnale</span><span class="app-desc">For your dwarf-hunting obsession 🌸</span></div>
-          </div>
-        </div>
-        <div class="info-card">
-          <h3><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3L22 9l-5.5 4.8L18 21l-6-3.6L6 21l1.5-7.2L2 9l7.1-.7z"/></svg> The Golden Rules ✨</h3>
-          <div class="app-list">
-            <div class="app-item"><span class="app-desc"><b>No cash on trams!</b> You can only pay with contactless card or phone tap inside.</span></div>
-            <div class="app-item"><span class="app-desc"><b>Hydropolis</b> is our backup plan if it rains.</span></div>
-            <div class="app-item"><span class="app-desc">If we get tired of the city, we can swap a day to take a bus to the <b>Karkonosze Mountains</b> for a romantic hike.</span></div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  UI.root.innerHTML = html;
-  attachNodeListeners();
-  
-  const envelope = document.getElementById('day-envelope');
-  if (envelope) {
-    envelope.addEventListener('click', function() {
-      const body = document.getElementById('day-letter-body');
-      const hint = document.getElementById('day-tap-hint');
-      if (body.classList.contains('open')) { body.classList.remove('open'); hint.textContent = "Tap to open"; } 
-      else { body.classList.add('open'); hint.textContent = "Close letter"; }
-    });
-  }
-}
-
-function attachNodeListeners() {
-  document.querySelectorAll('.node-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = btn.dataset.id; const titleEl = document.getElementById(`title-${id}`);
-      if (appState.checkedItems.has(id)) { appState.checkedItems.delete(id); btn.classList.remove('completed'); titleEl.classList.remove('completed'); } 
-      else { appState.checkedItems.add(id); btn.classList.add('completed'); titleEl.classList.add('completed'); }
-      updateProgress();
-    });
+  document.getElementById('file-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const captionInput = prompt("Give this memory a cute caption:", "Our date in Wrocław ✨");
+        userPhotos.unshift({ caption: captionInput || "Special moment", url: event.target.result });
+        renderContent();
+      };
+      reader.readAsDataURL(file);
+    }
   });
-}
-
-function updateProgress() {
-  const current = appState.checkedItems.size;
-  const pct = Math.round((current / appState.totalItems) * 100);
-  UI.progFill.style.width = pct + '%'; UI.progText.textContent = `${current} / ${appState.totalItems}`;
-  if (pct === 100 && !appState.confettiFired) { appState.confettiFired = true; fireConfetti(); }
 }
 
 function initCountdown() {
@@ -574,32 +318,14 @@ function initCountdown() {
   const els = { d: document.getElementById('cd-days'), h: document.getElementById('cd-hours'), m: document.getElementById('cd-mins'), s: document.getElementById('cd-secs') };
   function update() {
     const diff = target - new Date();
-    if (diff <= 0) { els.d.textContent = '00'; els.h.textContent = '00'; els.m.textContent = '00'; els.s.textContent = '00'; return; }
+    if (diff <= 0) return;
     const sec = Math.floor(diff/1000);
-    els.d.textContent = String(Math.floor(sec/86400)).padStart(2,'0'); els.h.textContent = String(Math.floor((sec%86400)/3600)).padStart(2,'0');
-    els.m.textContent = String(Math.floor((sec%3600)/60)).padStart(2,'0'); els.s.textContent = String(sec%60).padStart(2,'0');
+    els.d.textContent = String(Math.floor(sec/86400)).padStart(2,'0'); 
+    els.h.textContent = String(Math.floor((sec%86400)/3600)).padStart(2,'0');
+    els.m.textContent = String(Math.floor((sec%3600)/60)).padStart(2,'0'); 
+    els.s.textContent = String(sec%60).padStart(2,'0');
   }
   update(); setInterval(update, 1000);
-}
-
-function fireConfetti() {
-  const canvas = document.getElementById('confetti-canvas'); const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const particles = []; const colors = ['#ff4d6d', '#ff8fa3', '#ffb3c1', '#ffffff', '#d4af37'];
-  for(let i=0; i<150; i++) {
-    particles.push({ x: canvas.width / 2, y: canvas.height / 2 + 100, r: Math.random() * 6 + 2, dx: Math.random() * 10 - 5, dy: Math.random() * -10 - 5, color: colors[Math.floor(Math.random() * colors.length)], tilt: Math.floor(Math.random() * 10) - 10, tiltAngle: 0, tiltAngleInc: (Math.random() * 0.07) + 0.05 });
-  }
-  let animationId;
-  function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); let active = false;
-    particles.forEach(p => {
-      p.tiltAngle += p.tiltAngleInc; p.y += (Math.cos(p.tiltAngle) + 1 + p.r / 2) / 2; p.x += Math.sin(p.tiltAngle) * 2; p.dy += 0.05; p.y += p.dy; p.x += p.dx;
-      ctx.beginPath(); ctx.lineWidth = p.r; ctx.strokeStyle = p.color; ctx.moveTo(p.x + p.tilt + p.r, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r); ctx.stroke();
-      if (p.y < canvas.height) active = true;
-    });
-    if (active) animationId = requestAnimationFrame(render); else ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  render();
 }
 
 function initHearts() {
@@ -608,19 +334,15 @@ function initHearts() {
   for(let i=0; i<15; i++) {
     const left = Math.random() * 100;
     const delay = Math.random() * 8;
-    const duration = 6 + Math.random() * 6;
-    html += `<div class="heart-particle" style="left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;"></div>`;
+    html += `<div class="heart-particle" style="left: ${left}%; animation-delay: ${delay}s;"></div>`;
   }
   container.innerHTML = html;
 }
 
-// Bootstrap
-applyTheme(0);
 initHearts();
 initCountdown();
 renderTabs();
 renderContent();
-updateProgress();
 </script>
 </body>
 </html>
