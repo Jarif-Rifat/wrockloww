@@ -43,31 +43,48 @@
   ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 10px; transition: 0.5s; }
   ::-webkit-scrollbar-track { background: transparent; }
 
-  /* ============ PRANK MODAL OVERLAY ============ */
-  #prank-modal {
-    position: fixed; inset: 0; background: rgba(74, 25, 44, 0.65); backdrop-filter: blur(8px);
+  /* ============ GIANT GHOST / JUMPSCARE OVERLAY ============ */
+  #ghost-overlay {
+    position: fixed; inset: 0; background: rgba(26, 11, 17, 0.85); backdrop-filter: blur(12px);
     z-index: 999999; display: none; justify-content: center; align-items: center; padding: 20px;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeInGhost 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
-  .prank-card {
-    background: white; padding: 40px 30px; border-radius: var(--radius-lg); text-align: center;
-    max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border: var(--glass-border);
-    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  @keyframes fadeInGhost {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
   }
-  .prank-emoji { font-size: 50px; margin-bottom: 12px; }
-  
-  .prank-card h3 { font-family: 'Fraunces', serif; font-size: 26px; color: var(--accent-primary); margin-bottom: 10px; }
-  .prank-card p { font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--text-muted); margin-bottom: 24px; }
-  .prank-btn { background: var(--hero-grad); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 15px; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; }
-  .prank-btn:hover { transform: scale(1.05); }
+
+  .ghost-content {
+    text-align: center; max-width: 450px; width: 100%; padding: 40px 30px;
+    background: white; border-radius: var(--radius-lg); box-shadow: 0 0 60px rgba(255, 77, 109, 0.5);
+    border: 3px solid var(--accent-primary); animation: popGhostCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes popGhostCard {
+    0% { transform: translateY(40px) scale(0.8); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .giant-ghost {
+    font-size: 110px; line-height: 1; margin-bottom: 10px;
+    display: inline-block; animation: floatGhost 1.5s ease-in-out infinite alternate;
+  }
+  @keyframes floatGhost {
+    0% { transform: translateY(0) rotate(-5deg); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
+    100% { transform: translateY(-15px) rotate(5deg); filter: drop-shadow(0 20px 25px rgba(255,77,109,0.4)); }
+  }
+
+  .ghost-title { font-family: 'Fraunces', serif; font-size: 32px; color: var(--accent-primary); margin-bottom: 12px; }
+  .ghost-msg { font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--text-main); margin-bottom: 25px; }
+  .ghost-btn { background: var(--hero-grad); color: white; border: none; padding: 14px 32px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; }
+  .ghost-btn:hover { transform: scale(1.05); }
 
   /* Shake animation */
   @keyframes shake {
     0% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-8px); }
+    80% { transform: translateX(8px); }
     100% { transform: translateX(0); }
   }
   .shake-it { animation: shake 0.4s ease-in-out; }
@@ -122,14 +139,18 @@
   .day-header h2 { font-family: 'Fraunces', serif; font-size: 40px; margin-bottom: 8px; }
   .day-header p.subtitle { font-size: 17px; font-weight: 600; }
 
-  /* ============ MEMORY VAULT STYLING ============ */
-  .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 30px; animation: fadeIn 0.8s ease-out; }
-  .polaroid { background: white; padding: 15px 15px 25px 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 2px solid var(--accent-glow); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center; }
-  .polaroid:hover { transform: translateY(-8px) rotate(2deg); box-shadow: 0 15px 40px var(--accent-primary); }
-  .polaroid-img-box { width: 100%; height: 220px; background: var(--bg-main); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
-  .polaroid-img-box img { width: 100%; height: 100%; object-fit: cover; }
-  .polaroid-placeholder { font-size: 40px; }
-  .polaroid-caption { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; color: var(--text-main); margin-top: 15px; font-weight: 600; }
+  /* ============ MEDIA VAULT STYLING ============ */
+  .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; margin-top: 30px; animation: fadeIn 0.8s ease-out; }
+  .media-card { background: white; padding: 15px 15px 25px 15px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 2px solid var(--accent-glow); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+  .media-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px var(--accent-primary); }
+  .media-box { width: 100%; height: 220px; background: var(--bg-main); border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .media-box img, .media-box video { width: 100%; height: 100%; object-fit: cover; }
+  .media-placeholder { font-size: 40px; }
+  .media-caption { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; color: var(--text-main); margin-top: 15px; font-weight: 600; }
+  
+  .download-btn { display: inline-block; margin-top: 12px; background: var(--bg-main); color: var(--accent-primary); border: 2px solid var(--accent-glow); padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; }
+  .download-btn:hover { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+
   .upload-box { background: var(--bg-card); backdrop-filter: blur(10px); border: 3px dashed var(--accent-primary); border-radius: var(--radius-lg); padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 30px var(--accent-glow); }
   .upload-btn { display: inline-block; background: var(--hero-grad); color: white; padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 20px var(--accent-glow); transition: 0.3s; margin-top: 15px; }
   .upload-btn:hover { transform: scale(1.05); }
@@ -141,19 +162,18 @@
   .signature { font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--accent-primary); font-weight: 800; }
 
   @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-  @keyframes popIn { 0% { transform: scale(0.8); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body id="body-tag">
 
-<!-- PRANK POPUP MODAL -->
-<div id="prank-modal">
-  <div class="prank-card">
-    <div class="prank-emoji" id="prank-emoji">🤖</div>
-    <h3 id="prank-title">System Error</h3>
-    <p id="prank-text">Access denied.</p>
-    <button class="prank-btn" onclick="closePrank()">Fine, I'll close it 🙄</button>
+<!-- GIANT GHOST / JUMPSCARE OVERLAY -->
+<div id="ghost-overlay">
+  <div class="ghost-content">
+    <div class="giant-ghost" id="ghost-icon">👻</div>
+    <h3 class="ghost-title" id="ghost-title">Boo! Caught you!</h3>
+    <p class="ghost-msg" id="ghost-msg">You can't peek early!</p>
+    <button class="ghost-btn" onclick="closeGhost()">Okay okay, I'll wait! 🙈</button>
   </div>
 </div>
 
@@ -190,60 +210,82 @@
 <script>
 const TABS = [
   { 
-    name: "📸 Memory Vault", 
+    name: "📸 Media Vault", 
+    label: "Memories",
     isVault: true 
   },
   { 
-    name: "🔒 Day 1", 
-    emoji: "🛑",
-    title: "Server Halted!",
-    msg: "Error 403: Impatient girlfriend detected. Jarif’s firewall blocked this tab because you're trying to speedrun a 540-day countdown. Touch grass (or wait for October)." 
+    day: "Fri",
+    date: "Oct 16",
+    title: "Finally Back Together", 
+    ghost: "👻",
+    ghostTitle: "BOO! Caught you peeking!",
+    msg: "Error 403: Impatient girlfriend detected! Jarif’s firewall blocked this tab because you're trying to speedrun a 540-day countdown. Go back to the vault!" 
   },
   { 
-    name: "🔒 Day 2", 
-    emoji: "🕵️‍♀️",
-    title: "Nice Try, Hacker.",
-    msg: "Biometric scan failed: Too much curiosity. This file is encrypted with high-level secrecy until the exact minute we land. Keep guessing what's inside!" 
+    day: "Sat",
+    date: "Oct 17",
+    title: "Cobblestones & Kisses", 
+    ghost: "🦇",
+    ghostTitle: "Not so fast, detective!",
+    msg: "Biometric scan failed! Too much curiosity detected. This file is guarded by a spooky ghost until October 17th. Keep guessing what's inside!" 
   },
   { 
-    name: "🔒 Day 3", 
-    emoji: "🔐",
-    title: "Classified Intel",
-    msg: "Classified under 'Jarif’s Secret Agenda'. Unauthorized viewing by Adia will result in mandatory headpats and zero spoilers." 
+    day: "Sun",
+    date: "Oct 18",
+    title: "Modern Magic", 
+    ghost: "🎃",
+    ghostTitle: "Secret Area Locked!",
+    msg: "Classified under 'Jarif’s Secret Agenda'. Unauthorized viewing by Adia will summon more ghosts. Proceed with caution!" 
   },
   { 
-    name: "🔒 Day 4", 
-    emoji: "🚧",
-    title: "Under Construction",
-    msg: "Warning: Heavy romantic engineering in progress. Hard hats required. Come back later when the paperwork clears." 
+    day: "Mon",
+    date: "Oct 19",
+    title: "Castles for My Queen", 
+    ghost: "🐉",
+    ghostTitle: "Dragon Guard Active!",
+    msg: "Heavy romantic engineering in progress. The castle gates are tightly sealed until the actual trip. Back off, hacker!" 
   },
   { 
-    name: "🔒 Day 5", 
-    emoji: "🛸",
-    title: "Alien Interference",
-    msg: "Data corrupted by extreme excitement levels. Please calm down, take a deep breath, and check back in a few weeks." 
+    day: "Tue",
+    date: "Oct 20",
+    title: "Golden Hour Sunsets", 
+    ghost: "👻",
+    ghostTitle: "Spooky Alert!",
+    msg: "Data corrupted by extreme excitement levels! Take a deep breath, calm down, and stop trying to skip ahead to the sunset." 
   },
   { 
-    name: "🔒 Day 6", 
-    emoji: "🚨",
-    title: "Emergency Lockdown",
-    msg: "You hit the finish line way too early! The end-game content is locked until you actually survive the rest of the trip first." 
+    day: "Wed",
+    date: "Oct 21",
+    title: "Until Next Time", 
+    ghost: "🛸",
+    ghostTitle: "Alien Abduction Warning!",
+    msg: "You hit the finish line way too early! The end-game content is locked in another dimension until you survive the actual trip first." 
+  },
+  { 
+    isLetterTab: true,
+    day: "Forever", 
+    date: "Oct 21",
+    title: "My Heart is Yours", 
+    ghost: "💌",
+    ghostTitle: "Sealed With a Spell!",
+    msg: "Trying to open the final letter early?! Absolutely not allowed. You have to earn this one with a real kiss when we meet first!" 
   }
 ];
 
 let activeTab = 0;
-const userPhotos = [
-  { caption: "Our first coffee in Wrocław ☕", url: "" },
-  { caption: "Gas lamplighter walk ✨", url: "" },
-  { caption: "My favorite view (You) 💖", url: "" }
+const userVaultItems = [
+  { type: "image", caption: "Our first coffee in Wrocław ☕", url: "" },
+  { type: "image", caption: "Gas lamplighter walk ✨", url: "" },
+  { type: "image", caption: "My favorite view (You) 💖", url: "" }
 ];
 
 function renderTabs() {
   const container = document.getElementById('tabs');
   container.innerHTML = TABS.map((t, idx) => `
     <button class="tab-btn ${idx === activeTab ? 'active' : ''}" onclick="handleTabClick(${idx})">
-      <span class="day-label">Wrocław Trip</span>
-      <span class="tab-title">${t.name}</span>
+      <span class="day-label">${t.day || 'Vault'} · ${t.date || 'Media'}</span>
+      <span class="day-title">${t.isVault ? 'Media Vault' : '🔒 ' + t.title}</span>
     </button>
   `).join('');
 }
@@ -254,46 +296,53 @@ function handleTabClick(idx) {
     renderTabs();
     renderContent();
   } else {
-    // Shake effect on body
+    // Shake screen effect
     const body = document.getElementById('body-tag');
     body.classList.add('shake-it');
     setTimeout(() => body.classList.remove('shake-it'), 400);
 
-    // Show clever prank popup
-    document.getElementById('prank-emoji').textContent = TABS[idx].emoji;
-    document.getElementById('prank-title').textContent = TABS[idx].title;
-    document.getElementById('prank-text').textContent = TABS[idx].msg;
-    document.getElementById('prank-modal').style.display = 'flex';
+    // Pop out the giant ghost jumpscare modal
+    document.getElementById('ghost-icon').textContent = TABS[idx].ghost;
+    document.getElementById('ghost-title').textContent = TABS[idx].ghostTitle;
+    document.getElementById('ghost-msg').textContent = TABS[idx].msg;
+    document.getElementById('ghost-overlay').style.display = 'flex';
   }
 }
 
-function closePrank() {
-  document.getElementById('prank-modal').style.display = 'none';
+function closeGhost() {
+  document.getElementById('ghost-overlay').style.display = 'none';
 }
 
 function renderContent() {
   const root = document.getElementById('app-root');
   root.innerHTML = `
     <div class="day-header">
-      <h2>Our Memory Vault 📸</h2>
-      <p class="subtitle">Every picture we take together goes right here.</p>
+      <h2>Our Media Vault 📸🎥</h2>
+      <p class="subtitle">Upload photos and videos, and download your favorite memories together.</p>
     </div>
     
     <div class="upload-box">
-      <p style="font-weight:700; font-size:16px; margin-bottom:8px;">Add a new photo to our vault</p>
-      <p style="font-size:13.5px; color:var(--text-muted);">Snap a picture during our dates and upload it right here!</p>
+      <p style="font-weight:700; font-size:16px; margin-bottom:8px;">Add a new photo or video</p>
+      <p style="font-size:13.5px; color:var(--text-muted);">Upload any media clip right here so you can both keep it!</p>
       <label class="upload-btn">
-        Choose Photo <input type="file" id="file-input" accept="image/*">
+        Choose Photo/Video <input type="file" id="file-input" accept="image/*,video/*">
       </label>
     </div>
 
     <div class="vault-grid">
-      ${userPhotos.map(p => `
-        <div class="polaroid">
-          <div class="polaroid-img-box">
-            ${p.url ? `<img src="${p.url}" alt="Memory">` : `<span class="polaroid-placeholder">❤️</span>`}
+      ${userVaultItems.map((item, index) => `
+        <div class="media-card">
+          <div>
+            <div class="media-box">
+              ${item.url ? (
+                item.type === 'video' ? 
+                `<video src="${item.url}" controls></video>` : 
+                `<img src="${item.url}" alt="Memory">`
+              ) : `<span class="media-placeholder">❤️️</span>`}
+            </div>
+            <div class="media-caption">${item.caption}</div>
           </div>
-          <div class="polaroid-caption">${p.caption}</div>
+          ${item.url ? `<a href="${item.url}" download="Our-Memory-${index}" class="download-btn">📥 Download File</a>` : ''}
         </div>
       `).join('')}
     </div>
@@ -304,8 +353,9 @@ function renderContent() {
     if (file) {
       const reader = new FileReader();
       reader.onload = function(event) {
-        const captionInput = prompt("Give this memory a cute caption:", "Our date in Wrocław ✨");
-        userPhotos.unshift({ caption: captionInput || "Special moment", url: event.target.result });
+        const captionInput = prompt("Give this memory a cute caption:", "Our amazing moment ✨");
+        const fileType = file.type.startsWith('video') ? 'video' : 'image';
+        userVaultItems.unshift({ type: fileType, caption: captionInput || "Special memory", url: event.target.result });
         renderContent();
       };
       reader.readAsDataURL(file);
