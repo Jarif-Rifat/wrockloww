@@ -139,7 +139,7 @@
   .day-header h2 { font-family: 'Fraunces', serif; font-size: 40px; margin-bottom: 8px; }
   .day-header p.subtitle { font-size: 17px; font-weight: 600; }
 
-  /* ============ MEDIA VAULT STYLING ============ */
+  /* ============ MEMORY VAULT STYLING ============ */
   .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; margin-top: 30px; animation: fadeIn 0.8s ease-out; }
   .media-card { background: white; padding: 15px 15px 25px 15px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 2px solid var(--accent-glow); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
   .media-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px var(--accent-primary); }
@@ -148,8 +148,12 @@
   .media-placeholder { font-size: 40px; }
   .media-caption { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; color: var(--text-main); margin-top: 15px; font-weight: 600; }
   
-  .download-btn { display: inline-block; margin-top: 12px; background: var(--bg-main); color: var(--accent-primary); border: 2px solid var(--accent-glow); padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; }
+  .action-buttons { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+  .download-btn { background: var(--bg-main); color: var(--accent-primary); border: 2px solid var(--accent-glow); padding: 8px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; flex: 1; }
   .download-btn:hover { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+  
+  .delete-btn { background: #fff0f3; color: #d90429; border: 2px solid #ffccd5; padding: 8px 12px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+  .delete-btn:hover { background: #d90429; color: white; border-color: #d90429; }
 
   .upload-box { background: var(--bg-card); backdrop-filter: blur(10px); border: 3px dashed var(--accent-primary); border-radius: var(--radius-lg); padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 30px var(--accent-glow); }
   .upload-btn { display: inline-block; background: var(--hero-grad); color: white; padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 20px var(--accent-glow); transition: 0.3s; margin-top: 15px; }
@@ -210,7 +214,7 @@
 <script>
 const TABS = [
   { 
-    name: "📸 Media Vault", 
+    name: "📸 Memory Vault", 
     label: "Memories",
     isVault: true 
   },
@@ -274,18 +278,36 @@ const TABS = [
 ];
 
 let activeTab = 0;
-const userVaultItems = [
-  { type: "image", caption: "Our first coffee in Wrocław ☕", url: "" },
-  { type: "image", caption: "Gas lamplighter walk ✨", url: "" },
-  { type: "image", caption: "My favorite view (You) 💖", url: "" }
-];
+
+let userVaultItems = [];
+try {
+  userVaultItems = JSON.parse(localStorage.getItem('jarif_adia_memory_vault')) || [];
+} catch (e) {
+  userVaultItems = [];
+}
+
+if (userVaultItems.length === 0) {
+  userVaultItems = [
+    { type: "image", caption: "Our first coffee in Wrocław ☕", url: "" },
+    { type: "image", caption: "Gas lamplighter walk ✨", url: "" },
+    { type: "image", caption: "My favorite view (You) 💖", url: "" }
+  ];
+}
+
+function saveVault() {
+  try {
+    localStorage.setItem('jarif_adia_memory_vault', JSON.stringify(userVaultItems));
+  } catch (err) {
+    alert("Storage limit reached! Try deleting an older photo to make space.");
+  }
+}
 
 function renderTabs() {
   const container = document.getElementById('tabs');
   container.innerHTML = TABS.map((t, idx) => `
     <button class="tab-btn ${idx === activeTab ? 'active' : ''}" onclick="handleTabClick(${idx})">
-      <span class="day-label">${t.day || 'Vault'} · ${t.date || 'Media'}</span>
-      <span class="day-title">${t.isVault ? 'Media Vault' : '🔒 ' + t.title}</span>
+      <span class="day-label">${t.day || 'Vault'} · ${t.date || 'Memories'}</span>
+      <span class="day-title">${t.isVault ? 'Memory Vault' : '🔒 ' + t.title}</span>
     </button>
   `).join('');
 }
@@ -296,12 +318,10 @@ function handleTabClick(idx) {
     renderTabs();
     renderContent();
   } else {
-    // Shake screen effect
     const body = document.getElementById('body-tag');
     body.classList.add('shake-it');
     setTimeout(() => body.classList.remove('shake-it'), 400);
 
-    // Pop out the giant ghost jumpscare modal
     document.getElementById('ghost-icon').textContent = TABS[idx].ghost;
     document.getElementById('ghost-title').textContent = TABS[idx].ghostTitle;
     document.getElementById('ghost-msg').textContent = TABS[idx].msg;
@@ -313,17 +333,37 @@ function closeGhost() {
   document.getElementById('ghost-overlay').style.display = 'none';
 }
 
+function deleteItem(index) {
+  if (confirm("Are you sure you want to delete this memory?")) {
+    userVaultItems.splice(index, 1);
+    saveVault();
+    renderContent();
+  }
+}
+
+// Direct Gallery Download Handler
+function downloadMedia(url, type, index) {
+  if (!url) return;
+  const a = document.createElement('a');
+  a.href = url;
+  const extension = type === 'video' ? 'mp4' : 'jpg';
+  a.download = `Our-Wroclaw-Memory-${index + 1}.${extension}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 function renderContent() {
   const root = document.getElementById('app-root');
   root.innerHTML = `
     <div class="day-header">
-      <h2>Our Media Vault 📸🎥</h2>
-      <p class="subtitle">Upload photos and videos, and download your favorite memories together.</p>
+      <h2>Our Memory Vault 📸🎥</h2>
+      <p class="subtitle">Upload photos and videos that will stay here forever for our memories.</p>
     </div>
     
     <div class="upload-box">
       <p style="font-weight:700; font-size:16px; margin-bottom:8px;">Add a new photo or video</p>
-      <p style="font-size:13.5px; color:var(--text-muted);">Upload any media clip right here so you can both keep it!</p>
+      <p style="font-size:13.5px; color:var(--text-muted);">Upload any media clip right here so it stays permanently!</p>
       <label class="upload-btn">
         Choose Photo/Video <input type="file" id="file-input" accept="image/*,video/*">
       </label>
@@ -338,29 +378,70 @@ function renderContent() {
                 item.type === 'video' ? 
                 `<video src="${item.url}" controls></video>` : 
                 `<img src="${item.url}" alt="Memory">`
-              ) : `<span class="media-placeholder">❤️️</span>`}
+              ) : `<span class="media-placeholder">❤️</span>`}
             </div>
             <div class="media-caption">${item.caption}</div>
           </div>
-          ${item.url ? `<a href="${item.url}" download="Our-Memory-${index}" class="download-btn">📥 Download File</a>` : ''}
+          <div class="action-buttons">
+            ${item.url ? `<button onclick="downloadMedia('${item.url}', '${item.type}', ${index})" class="download-btn">📥 Download</button>` : ''}
+            <button class="delete-btn" onclick="deleteItem(${index})">🗑️ Delete</button>
+          </div>
         </div>
       `).join('')}
     </div>
   `;
 
-  document.getElementById('file-input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const captionInput = prompt("Give this memory a cute caption:", "Our amazing moment ✨");
-        const fileType = file.type.startsWith('video') ? 'video' : 'image';
-        userVaultItems.unshift({ type: fileType, caption: captionInput || "Special memory", url: event.target.result });
-        renderContent();
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+  const fileInput = document.getElementById('file-input');
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const captionInput = prompt("Give this memory a cute caption:", "Our amazing moment ✨");
+          
+          if (file.type && file.type.startsWith('image')) {
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 800;
+              const MAX_HEIGHT = 800;
+              let width = img.width;
+              let height = img.height;
+
+              if (width > height) {
+                if (width > MAX_WIDTH) {
+                  height *= MAX_WIDTH / width;
+                  width = MAX_WIDTH;
+                }
+              } else {
+                if (height > MAX_HEIGHT) {
+                  width *= MAX_HEIGHT / height;
+                  height = MAX_HEIGHT;
+                }
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+              userVaultItems.unshift({ type: 'image', caption: captionInput || "Special memory", url: compressedDataUrl });
+              saveVault();
+              renderContent();
+            };
+            img.src = event.target.result;
+          } else {
+            userVaultItems.unshift({ type: 'video', caption: captionInput || "Special memory", url: event.target.result });
+            saveVault();
+            renderContent();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 }
 
 function initCountdown() {
