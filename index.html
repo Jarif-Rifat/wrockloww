@@ -43,6 +43,42 @@
   ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 10px; transition: 0.5s; }
   ::-webkit-scrollbar-track { background: transparent; }
 
+  /* ============ MULTI-PAGE BIRTHDAY EXPERIENCE ============ */
+  #bday-overlay {
+    position: fixed; inset: 0; background: linear-gradient(135deg, #ffe5ec 0%, #ffb3c6 100%); z-index: 99999999;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 30px; overflow: hidden;
+  }
+  
+  .bday-content-box {
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px);
+    padding: 50px 30px; border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px rgba(255, 77, 109, 0.2);
+    border: 3px solid white;
+    max-width: 550px; width: 100%;
+    position: relative; z-index: 10;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .bday-title { font-family: 'Fraunces', serif; font-size: clamp(32px, 7vw, 45px); color: var(--accent-primary); margin-bottom: 20px; line-height: 1.2; }
+  .bday-msg { font-size: 20px; font-weight: 600; color: var(--text-main); margin-bottom: 35px; line-height: 1.6; }
+  
+  .bday-btn { 
+    background: var(--hero-grad); color: white; border: none; padding: 16px 40px; 
+    border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 18px; 
+    box-shadow: 0 10px 30px var(--accent-glow); transition: 0.3s; 
+  }
+  .bday-btn:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 15px 40px rgba(255, 77, 109, 0.5); }
+
+  /* Insane floating animations for Kisses & Balloons */
+  .floating-emoji { position: absolute; animation: floatUpBday linear infinite; z-index: 1; user-select: none; }
+  @keyframes floatUpBday {
+    0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-20vh) rotate(25deg) scale(1.2); opacity: 0; }
+  }
+
   /* ============ GIANT GHOST / JUMPSCARE OVERLAY ============ */
   #ghost-overlay {
     position: fixed; inset: 0; background: rgba(26, 11, 17, 0.85); backdrop-filter: blur(12px);
@@ -75,7 +111,7 @@
 
   .ghost-title { font-family: 'Fraunces', serif; font-size: 32px; color: var(--accent-primary); margin-bottom: 12px; }
   .ghost-msg { font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--text-main); margin-bottom: 25px; }
-  .ghost-btn { background: var(--hero-grad); color: white; border: none; padding: 14px 32px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; }
+  .ghost-btn { background: var(--hero-grad); color: white; border: none; padding: 14px 32px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; position: relative; z-index: 2; }
   .ghost-btn:hover { transform: scale(1.05); }
 
   /* Shake animation */
@@ -159,6 +195,15 @@
 </head>
 <body id="body-tag">
 
+<!-- MULTI-PAGE BIRTHDAY OVERLAY -->
+<div id="bday-overlay">
+  <div class="bday-content-box" id="bday-box">
+    <h2 class="bday-title" id="bday-title-text">Happy Birthday, Adia! 🎉🎂</h2>
+    <p class="bday-msg" id="bday-msg-text">To the absolute love of my life...</p>
+    <button class="bday-btn" id="bday-btn-element" onclick="nextBdayPage()">Next 💌</button>
+  </div>
+</div>
+
 <!-- GIANT GHOST / JUMPSCARE OVERLAY -->
 <div id="ghost-overlay">
   <div class="ghost-content">
@@ -217,6 +262,84 @@ const TABS = [
 ];
 
 let activeTab = 0;
+
+// ==========================================
+// BIRTHDAY STORY PAGES (EDIT TEXT HERE IF YOU WANT)
+// ==========================================
+const bdayStory = [
+  {
+    title: "Happy Birthday, Adia! 🎉🎂",
+    msg: "To the absolute love of my life... I made a little something for you.",
+    btn: "Click me ✨"
+  },
+  {
+    title: "My Favorite Girl 💖",
+    msg: "Every single day since we met, you have made my world brighter. I am so unbelievably lucky to call you mine.",
+    btn: "Next 💌"
+  },
+  {
+    title: "I Miss You So Much 🥺",
+    msg: "I have been counting down the seconds to this Wrocław trip for a year and a half. Just to hold you, kiss you, and never let go.",
+    btn: "Almost there 💕"
+  },
+  {
+    title: "Forever & Always ♾️",
+    msg: "I can't wait to spend every future birthday spoiling you and reminding you how perfect you are. I love you so much.",
+    btn: "Open your present 🎁"
+  }
+];
+
+let currentBdayPage = 0;
+
+function checkBirthday() {
+  const today = new Date();
+  // Month is 0-indexed in JS (9 = October), Day is 1-indexed (5 = 5th)
+  if (today.getMonth() === 9 && today.getDate() === 5) {
+    const overlay = document.getElementById('bday-overlay');
+    overlay.style.display = 'flex';
+    
+    // Generate massive amount of floating balloons, kisses, and hearts!
+    const emojis = ['🎈', '🎉', '💖', '✨', '🎂', '💋', '🧸', '🥰'];
+    for(let i=0; i<60; i++) {
+      const b = document.createElement('div');
+      b.className = 'floating-emoji';
+      b.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      b.style.left = Math.random() * 100 + '%';
+      b.style.animationDelay = (Math.random() * 8) + 's';
+      b.style.animationDuration = (Math.random() * 4 + 4) + 's';
+      b.style.fontSize = (Math.random() * 30 + 30) + 'px'; // Make them big!
+      overlay.appendChild(b);
+    }
+  }
+}
+
+function nextBdayPage() {
+  currentBdayPage++;
+  const box = document.getElementById('bday-box');
+  
+  if (currentBdayPage < bdayStory.length) {
+    // Fade out
+    box.style.opacity = '0';
+    box.style.transform = 'scale(0.95)';
+    
+    setTimeout(() => {
+      // Change text
+      document.getElementById('bday-title-text').textContent = bdayStory[currentBdayPage].title;
+      document.getElementById('bday-msg-text').textContent = bdayStory[currentBdayPage].msg;
+      document.getElementById('bday-btn-element').textContent = bdayStory[currentBdayPage].btn;
+      
+      // Fade back in
+      box.style.opacity = '1';
+      box.style.transform = 'scale(1)';
+    }, 400); // 400ms delay for smooth transition
+    
+  } else {
+    // Close the birthday overlay completely and reveal the vault!
+    const overlay = document.getElementById('bday-overlay');
+    overlay.style.animation = 'fadeInGhost 0.8s reverse forwards';
+    setTimeout(() => overlay.style.display = 'none', 800);
+  }
+}
 
 function renderTabs() {
   const container = document.getElementById('tabs');
@@ -299,6 +422,7 @@ initHearts();
 initCountdown();
 renderTabs();
 renderContent();
+checkBirthday(); // <-- Runs the birthday check on load
 </script>
 </body>
 </html>
