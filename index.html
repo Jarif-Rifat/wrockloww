@@ -43,6 +43,57 @@
   ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 10px; transition: 0.5s; }
   ::-webkit-scrollbar-track { background: transparent; }
 
+  /* ============ TOP APP ICONS ============ */
+  .top-actions {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    display: flex; gap: 12px;
+  }
+  .action-btn {
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px);
+    border: 2px solid white; width: 48px; height: 48px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; cursor: pointer; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: var(--text-main);
+  }
+  .action-btn:hover {
+    transform: scale(1.15) translateY(-3px);
+    background: white;
+    box-shadow: 0 8px 25px rgba(255, 77, 109, 0.3);
+  }
+
+  /* ============ POPUP MODALS ============ */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26, 11, 17, 0.6);
+    backdrop-filter: blur(8px); z-index: 999999; display: none;
+    justify-content: center; align-items: center; padding: 20px;
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal-content {
+    background: var(--bg-main); border-radius: var(--radius-lg); width: 100%;
+    max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative;
+    padding: 40px 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 3px solid white;
+    transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .modal-overlay.active .modal-content { transform: scale(1); }
+  .close-modal {
+    position: absolute; top: 15px; right: 15px; background: rgba(255, 77, 109, 0.1);
+    color: var(--accent-primary); border: none; width: 36px; height: 36px;
+    border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer;
+    transition: 0.3s; display: flex; align-items: center; justify-content: center;
+  }
+  .close-modal:hover { background: var(--accent-primary); color: white; transform: rotate(90deg); }
+
+  /* Grocery Cards inside Modal */
+  .grocery-card {
+    background: white; padding: 20px; border-radius: var(--radius-md); box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--accent-primary); margin-bottom: 15px; text-align: left;
+  }
+  .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .store-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--text-main); }
+  .store-desc { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+  .route-badge { display: inline-block; background: rgba(255, 77, 109, 0.08); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text-main); margin-right: 5px; margin-bottom: 5px; }
+
   /* ============ MULTI-PAGE BIRTHDAY EXPERIENCE ============ */
   #bday-overlay {
     position: fixed; inset: 0; background: linear-gradient(135deg, #ffe5ec 0%, #ffb3c6 100%); z-index: 99999999;
@@ -180,9 +231,6 @@
   .vault-icon { font-size: 60px; margin-bottom: 15px; animation: floatGhost 3s infinite alternate ease-in-out; display: inline-block; }
   .vault-gateway h3 { font-family: 'Fraunces', serif; font-size: 28px; color: var(--accent-primary); margin-bottom: 10px; }
   .vault-gateway p { font-size: 16px; font-weight: 600; color: var(--text-muted); max-width: 500px; margin: 0 auto 25px; line-height: 1.6; }
-  
-  .cloud-btn { display: inline-block; background: var(--hero-grad); color: white; padding: 16px 36px; border-radius: 50px; font-size: 16px; font-weight: 800; text-decoration: none; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s; letter-spacing: 0.5px; }
-  .cloud-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 35px rgba(255, 77, 109, 0.4); }
 
   footer { text-align: center; padding: 40px 20px 80px; position: relative; z-index: 10;}
   footer p { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
@@ -194,6 +242,62 @@
 </style>
 </head>
 <body id="body-tag">
+
+<!-- TOP APP ICONS (Shopping Cart & Camera) -->
+<div class="top-actions">
+  <button class="action-btn" onclick="openModal('modal-grocery')" title="Grocery Map">🛒</button>
+  <button class="action-btn" onclick="openModal('modal-vault')" title="Memory Vault">📸</button>
+</div>
+
+<!-- GROCERY MODAL WINDOW -->
+<div class="modal-overlay" id="modal-grocery">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal('modal-grocery')">×</button>
+    <h2 style="font-family: 'Fraunces', serif; font-size: 32px; color: var(--accent-primary); margin-bottom: 10px; text-align: center;">Basecamp Setup 🛒</h2>
+    <p style="text-align: center; font-weight: 600; color: var(--text-muted); margin-bottom: 25px;">Our master plan for fresh Halal meat and ingredients near Sikorskiego 13 for Beef Bhuna and Shrimp Pasta.</p>
+    
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Biedronka (Braniborska 14)</span>
+        <span style="font-size: 24px;">🧅</span>
+      </div>
+      <p class="store-desc">The absolute closest option for our base veggies and dairy. We will grab heavy cream, onions, garlic, and pasta here.</p>
+      <div class="route-badge"><span>🚶</span> 10 min walk</div>
+      <div class="route-badge"><span>📏</span> 800m away</div>
+    </div>
+
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Safa Meats (Ładna 4/6)</span>
+        <span style="font-size: 24px;">🥩</span>
+      </div>
+      <p class="store-desc">Our primary stop for strictly Halal beef (Wołowina) and chicken (Kurczak). They also stock extra Asian spices just in case!</p>
+      <div class="route-badge"><span>🚋</span> 25 min (Tram 10/33)</div>
+      <div class="route-badge"><span>🚗</span> 10-15 min Uber/Bolt</div>
+    </div>
+
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Lidl (Braniborska 82)</span>
+        <span style="font-size: 24px;">🍤</span>
+      </div>
+      <p class="store-desc">Located just down the street from Biedronka. The perfect backup spot with a great freezer section for your shrimp (Krewetki).</p>
+      <div class="route-badge"><span>🚶</span> 15-20 min walk</div>
+      <div class="route-badge"><span>🚗</span> 3 min Uber/Bolt</div>
+    </div>
+  </div>
+</div>
+
+<!-- VAULT MODAL WINDOW -->
+<div class="modal-overlay" id="modal-vault">
+  <div class="modal-content" style="text-align: center;">
+    <button class="close-modal" onclick="closeModal('modal-vault')">×</button>
+    <div style="font-size: 60px; margin-bottom: 15px;">☁️</div>
+    <h2 style="font-family: 'Fraunces', serif; font-size: 28px; color: var(--accent-primary); margin-bottom: 10px;">The Forever Cloud</h2>
+    <p style="font-weight: 600; color: var(--text-muted); margin-bottom: 25px; max-width: 400px; margin-left: auto; margin-right: auto;">I built this vault to connect directly to our private, permanent cloud space. Every video, every photo, and every moment gets uploaded here forever.</p>
+    <a href="https://photos.app.goo.gl/GtU3uFRNaHjE7y6Y9" target="_blank" class="bday-btn" style="text-decoration: none; display: inline-block;">Open Our Shared Album ✨</a>
+  </div>
+</div>
 
 <!-- MULTI-PAGE BIRTHDAY OVERLAY -->
 <div id="bday-overlay">
@@ -246,12 +350,21 @@
 
 <script>
 // ==========================================
+// MODAL LOGIC FOR ICONS
+// ==========================================
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// ==========================================
 // GOOGLE PHOTOS LINK INJECTED HERE
 // ==========================================
 const SHARED_ALBUM_LINK = "https://photos.app.goo.gl/GtU3uFRNaHjE7y6Y9"; 
 
 const TABS = [
-  { name: "📸 Memory Vault", label: "Memories", isVault: true },
   { day: "Fri", date: "Oct 16", title: "Finally Back Together", ghost: "👻", ghostTitle: "BOO! Caught you peeking!", msg: "Error 403: Impatient girlfriend detected! Jarif’s firewall blocked this tab because you're trying to speedrun a 540-day countdown. Go back to the vault!" },
   { day: "Sat", date: "Oct 17", title: "Cobblestones & Kisses", ghost: "🦇", ghostTitle: "Not so fast, detective!", msg: "Biometric scan failed! Too much curiosity detected. This file is guarded by a spooky ghost until October 17th. Keep guessing what's inside!" },
   { day: "Sun", date: "Oct 18", title: "Modern Magic", ghost: "🎃", ghostTitle: "Secret Area Locked!", msg: "Classified under 'Jarif’s Secret Agenda'. Unauthorized viewing by Adia will summon more ghosts. Proceed with caution!" },
@@ -261,7 +374,7 @@ const TABS = [
   { isLetterTab: true, day: "Forever", date: "Oct 21", title: "My Heart is Yours", ghost: "💌", ghostTitle: "Sealed With a Spell!", msg: "Trying to open the final letter early?! Absolutely not allowed. You have to earn this one with a real kiss when we meet first!" }
 ];
 
-let activeTab = 0;
+let activeTab = -1; // No tab is selected by default
 
 // ==========================================
 // BIRTHDAY STORY PAGES
@@ -298,7 +411,6 @@ let currentBdayPage = 0;
 
 function checkBirthday() {
   const today = new Date();
-  // Triggers on BOTH October 5th and October 6th so she can see it right now and tomorrow!
   if (today.getMonth() === 9 && (today.getDate() === 5 || today.getDate() === 6)) {
     const overlay = document.getElementById('bday-overlay');
     overlay.style.display = 'flex';
@@ -310,29 +422,24 @@ function nextBdayPage() {
   const box = document.getElementById('bday-box');
   
   if (currentBdayPage < bdayStory.length) {
-    // Fade out
     box.style.opacity = '0';
     box.style.transform = 'scale(0.95)';
     
     setTimeout(() => {
-      // If we just clicked "Fix Error", change the color and spawn Kisses/Balloons!
       if (currentBdayPage === 1) {
         document.getElementById('bday-title-text').style.color = "var(--accent-primary)";
         spawnBalloons();
       }
 
-      // Change text
       document.getElementById('bday-title-text').textContent = bdayStory[currentBdayPage].title;
       document.getElementById('bday-msg-text').textContent = bdayStory[currentBdayPage].msg;
       document.getElementById('bday-btn-element').textContent = bdayStory[currentBdayPage].btn;
       
-      // Fade back in
       box.style.opacity = '1';
       box.style.transform = 'scale(1)';
     }, 400); 
     
   } else {
-    // Close the birthday overlay completely and reveal the vault!
     const overlay = document.getElementById('bday-overlay');
     overlay.style.animation = 'fadeInGhost 0.8s reverse forwards';
     setTimeout(() => overlay.style.display = 'none', 800);
@@ -358,27 +465,21 @@ function renderTabs() {
   const container = document.getElementById('tabs');
   container.innerHTML = TABS.map((t, idx) => `
     <button class="tab-btn ${idx === activeTab ? 'active' : ''}" onclick="handleTabClick(${idx})">
-      <span class="day-label">${t.day || 'Vault'} · ${t.date || 'Forever'}</span>
-      <span class="day-title">${t.isVault ? 'Memory Vault' : '🔒 ' + t.title}</span>
+      <span class="day-label">${t.day} · ${t.date}</span>
+      <span class="day-title">🔒 ${t.title}</span>
     </button>
   `).join('');
 }
 
 function handleTabClick(idx) {
-  if (TABS[idx].isVault) {
-    activeTab = idx;
-    renderTabs();
-    renderContent();
-  } else {
-    const body = document.getElementById('body-tag');
-    body.classList.add('shake-it');
-    setTimeout(() => body.classList.remove('shake-it'), 400);
+  const body = document.getElementById('body-tag');
+  body.classList.add('shake-it');
+  setTimeout(() => body.classList.remove('shake-it'), 400);
 
-    document.getElementById('ghost-icon').textContent = TABS[idx].ghost;
-    document.getElementById('ghost-title').textContent = TABS[idx].ghostTitle;
-    document.getElementById('ghost-msg').textContent = TABS[idx].msg;
-    document.getElementById('ghost-overlay').style.display = 'flex';
-  }
+  document.getElementById('ghost-icon').textContent = TABS[idx].ghost;
+  document.getElementById('ghost-title').textContent = TABS[idx].ghostTitle;
+  document.getElementById('ghost-msg').textContent = TABS[idx].msg;
+  document.getElementById('ghost-overlay').style.display = 'flex';
 }
 
 function closeGhost() {
@@ -388,19 +489,9 @@ function closeGhost() {
 function renderContent() {
   const root = document.getElementById('app-root');
   root.innerHTML = `
-    <div class="day-header">
-      <h2>Our Memory Vault 📸🎥</h2>
-      <p class="subtitle">Because our memories are too precious to lose.</p>
-    </div>
-    
-    <div class="vault-gateway">
-      <div class="vault-icon">☁️</div>
-      <h3>The Forever Cloud</h3>
-      <p>I built this vault to connect directly to our private, permanent cloud space. Every video, every photo, and every moment we capture in Wrocław gets uploaded here so we both have them forever.</p>
-      
-      <a href="${SHARED_ALBUM_LINK}" target="_blank" class="cloud-btn">
-        Open Our Shared Album ✨
-      </a>
+    <div class="day-header" style="padding-top: 20px;">
+      <h2>Hold On, Baby! 🔒</h2>
+      <p class="subtitle" style="color: var(--text-muted); font-weight: 600; line-height: 1.6;">I know you're excited, but our itinerary is a strict secret until we're finally together!<br>Tap a date above if you dare to test my security, or check out the 🛒 and 📸 icons up top.</p>
     </div>
   `;
 }
@@ -435,7 +526,7 @@ initHearts();
 initCountdown();
 renderTabs();
 renderContent();
-checkBirthday(); // <-- Runs the birthday check on load
+checkBirthday();
 </script>
 </body>
 </html>
