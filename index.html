@@ -84,7 +84,7 @@
   }
   .close-modal:hover { background: var(--accent-primary); color: white; transform: rotate(90deg); }
 
-  /* Grocery Cards inside Modal */
+  /* Grocery & Food Cards inside Modal */
   .grocery-card {
     background: white; padding: 20px; border-radius: var(--radius-md); box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     border-left: 5px solid var(--accent-primary); margin-bottom: 15px; text-align: left;
@@ -224,13 +224,7 @@
   main { max-width: 840px; margin: 0 auto; padding: 40px 20px 80px; }
   .day-header { text-align: center; margin-bottom: 30px; animation: fadeIn 0.5s ease-out; }
   .day-header h2 { font-family: 'Fraunces', serif; font-size: 40px; margin-bottom: 8px; }
-  .day-header p.subtitle { font-size: 17px; font-weight: 600; }
-
-  /* ============ VAULT GATEWAY STYLING ============ */
-  .vault-gateway { background: var(--bg-card); backdrop-filter: blur(10px); border: 3px solid var(--accent-glow); border-radius: var(--radius-lg); padding: 50px 30px; text-align: center; margin-top: 20px; box-shadow: 0 15px 40px rgba(255, 77, 109, 0.15); animation: fadeIn 0.6s ease-out; }
-  .vault-icon { font-size: 60px; margin-bottom: 15px; animation: floatGhost 3s infinite alternate ease-in-out; display: inline-block; }
-  .vault-gateway h3 { font-family: 'Fraunces', serif; font-size: 28px; color: var(--accent-primary); margin-bottom: 10px; }
-  .vault-gateway p { font-size: 16px; font-weight: 600; color: var(--text-muted); max-width: 500px; margin: 0 auto 25px; line-height: 1.6; }
+  .day-header p.subtitle { font-size: 17px; font-weight: 600; line-height: 1.6;}
 
   footer { text-align: center; padding: 40px 20px 80px; position: relative; z-index: 10;}
   footer p { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
@@ -243,10 +237,74 @@
 </head>
 <body id="body-tag">
 
-<!-- TOP APP ICONS (Shopping Cart & Camera) -->
+<!-- TOP APP ICONS (Shopping Cart, Food & Camera) -->
 <div class="top-actions">
+  <button class="action-btn" onclick="openModal('modal-food')" title="Food Guide">🍽️</button>
   <button class="action-btn" onclick="openModal('modal-grocery')" title="Grocery Map">🛒</button>
   <button class="action-btn" onclick="openModal('modal-vault')" title="Memory Vault">📸</button>
+</div>
+
+<!-- FOOD GUIDE MODAL WINDOW -->
+<div class="modal-overlay" id="modal-food">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal('modal-food')">×</button>
+    <h2 style="font-family: 'Fraunces', serif; font-size: 32px; color: var(--accent-primary); margin-bottom: 10px; text-align: center;">Our Food Guide 🍽️</h2>
+    <p style="text-align: center; font-weight: 600; color: var(--text-muted); margin-bottom: 25px;">The ultimate list of the best date night spots, huge flavors, and local classics in Wrocław.</p>
+    
+    <!-- Spicy & Indian -->
+    <h3 style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--text-main); margin-bottom: 15px; border-bottom: 2px solid var(--accent-glow); padding-bottom: 5px;">Spicy & Indian 🍛</h3>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Mango Mama</span>
+        <span style="font-size: 24px;">🥭</span>
+      </div>
+      <p class="store-desc">A beautiful, trendy spot with neon lights. Perfect fusion of Indian (Biryani, Butter Chicken) and Asian (Pad Thai) so we can both get what we crave!</p>
+    </div>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">India Concept</span>
+        <span style="font-size: 24px;">🫓</span>
+      </div>
+      <p class="store-desc">A gorgeous, cozy upscale spot in the historic center. Amazing Biryani, fresh garlic naan, and perfect for a romantic date night.</p>
+    </div>
+
+    <!-- Asian & Noodles -->
+    <h3 style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--text-main); margin-bottom: 15px; margin-top: 25px; border-bottom: 2px solid var(--accent-glow); padding-bottom: 5px;">Asian & Noodles 🍜</h3>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">WOO THAI Restaurant</span>
+        <span style="font-size: 24px;">🍤</span>
+      </div>
+      <p class="store-desc">The most authentic Thai food in the city with a beautiful, warm interior. Massive portions of amazing shrimp and veggie curries.</p>
+    </div>
+
+    <!-- The Kebab Fix -->
+    <h3 style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--text-main); margin-bottom: 15px; margin-top: 25px; border-bottom: 2px solid var(--accent-glow); padding-bottom: 5px;">The Kebab Fix 🌯</h3>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">KEBABIXX & MR KEBAB</span>
+        <span style="font-size: 24px;">🥙</span>
+      </div>
+      <p class="store-desc">When we just need a massive, classic Döner fix! Kebabixx for "craft" fresh-baked bread, or Mr Kebab for giant, perfectly seasoned portions.</p>
+    </div>
+
+    <!-- Local & Pizza -->
+    <h3 style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--text-main); margin-bottom: 15px; margin-top: 25px; border-bottom: 2px solid var(--accent-glow); padding-bottom: 5px;">Local & Trendy Vibes 🍕</h3>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Pierogarnia Stary Młyn</span>
+        <span style="font-size: 24px;">🥟</span>
+      </div>
+      <p class="store-desc">Right on the Market Square! The absolute best traditional Polish dumplings (Pierogi) with tons of vegetarian cheese and potato options.</p>
+    </div>
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Iggy Pizza</span>
+        <span style="font-size: 24px;">🍕</span>
+      </div>
+      <p class="store-desc">The coolest neon-lit vibe and the best Neapolitan pizza in Wrocław. Always packed with couples, amazing energy.</p>
+    </div>
+  </div>
 </div>
 
 <!-- GROCERY MODAL WINDOW -->
@@ -258,12 +316,20 @@
     
     <div class="grocery-card">
       <div class="store-header">
-        <span class="store-title">Biedronka (Braniborska 14)</span>
-        <span style="font-size: 24px;">🧅</span>
+        <span class="store-title">Auchan</span>
+        <span style="font-size: 24px;">🏪</span>
       </div>
-      <p class="store-desc">The absolute closest option for our base veggies and dairy. We will grab heavy cream, onions, garlic, and pasta here.</p>
-      <div class="route-badge"><span>🚶</span> 10 min walk</div>
-      <div class="route-badge"><span>📏</span> 800m away</div>
+      <p class="store-desc">The ultimate top-tier hypermarket! For a massive haul, specialty items, and literally everything we could ever want, this is the king.</p>
+      <div class="route-badge"><span>🛍️</span> Big grocery run</div>
+    </div>
+
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Carrefour</span>
+        <span style="font-size: 24px;">🛒</span>
+      </div>
+      <p class="store-desc">The absolute best for a massive selection of fresh goods, amazing snacks, and high-quality ingredients for our cooking nights.</p>
+      <div class="route-badge"><span>🥐</span> Premium picks</div>
     </div>
 
     <div class="grocery-card">
@@ -274,6 +340,16 @@
       <p class="store-desc">Our primary stop for strictly Halal beef (Wołowina) and chicken (Kurczak). They also stock extra Asian spices just in case!</p>
       <div class="route-badge"><span>🚋</span> 25 min (Tram 10/33)</div>
       <div class="route-badge"><span>🚗</span> 10-15 min Uber/Bolt</div>
+    </div>
+
+    <div class="grocery-card">
+      <div class="store-header">
+        <span class="store-title">Biedronka (Braniborska 14)</span>
+        <span style="font-size: 24px;">🧅</span>
+      </div>
+      <p class="store-desc">The absolute closest option for our base veggies and dairy. We will grab heavy cream, onions, garlic, and pasta here.</p>
+      <div class="route-badge"><span>🚶</span> 10 min walk</div>
+      <div class="route-badge"><span>📏</span> 800m away</div>
     </div>
 
     <div class="grocery-card">
@@ -294,7 +370,7 @@
     <button class="close-modal" onclick="closeModal('modal-vault')">×</button>
     <div style="font-size: 60px; margin-bottom: 15px;">☁️</div>
     <h2 style="font-family: 'Fraunces', serif; font-size: 28px; color: var(--accent-primary); margin-bottom: 10px;">The Forever Cloud</h2>
-    <p style="font-weight: 600; color: var(--text-muted); margin-bottom: 25px; max-width: 400px; margin-left: auto; margin-right: auto;">I built this vault to connect directly to our private, permanent cloud space. Every video, every photo, and every moment gets uploaded here forever.</p>
+    <p style="font-weight: 600; color: var(--text-muted); margin-bottom: 25px; max-width: 400px; margin-left: auto; margin-right: auto;">I built this vault to connect directly to our private, permanent cloud space. Every video, every photo, and every moment we capture gets uploaded here forever.</p>
     <a href="https://photos.app.goo.gl/GtU3uFRNaHjE7y6Y9" target="_blank" class="bday-btn" style="text-decoration: none; display: inline-block;">Open Our Shared Album ✨</a>
   </div>
 </div>
@@ -491,7 +567,7 @@ function renderContent() {
   root.innerHTML = `
     <div class="day-header" style="padding-top: 20px;">
       <h2>Hold On, Baby! 🔒</h2>
-      <p class="subtitle" style="color: var(--text-muted); font-weight: 600; line-height: 1.6;">I know you're excited, but our itinerary is a strict secret until we're finally together!<br>Tap a date above if you dare to test my security, or check out the 🛒 and 📸 icons up top.</p>
+      <p class="subtitle" style="color: var(--text-muted); font-weight: 600; line-height: 1.6;">I know you're excited, but our itinerary is a strict secret until we're finally together!<br>Tap a date above if you dare to test my security, or check out the 🍽️, 🛒 and 📸 icons up top.</p>
     </div>
   `;
 }
